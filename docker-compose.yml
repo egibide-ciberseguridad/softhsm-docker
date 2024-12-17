@@ -1,0 +1,20 @@
+services:
+
+  softhsm-server:
+    platform: linux/amd64
+    image: vegardit/softhsm2-pkcs11-proxy:latest
+    hostname: softhsm-server
+    ports:
+      - "2345:2345"
+
+  softhsm-client:
+    platform: linux/amd64
+    build: ./client/
+    hostname: softhsm-client
+    environment:
+      - PKCS11_PROXY_SOCKET=tls://softhsm-server:2345
+      - PKCS11_PROXY_TLS_PSK_FILE=/opt/test.tls.psk
+
+networks:
+  default:
+    name: ${NETWORK_NAME}
